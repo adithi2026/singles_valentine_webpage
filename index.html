@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Singles Valentine Week</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Floating hearts */
+    .floating-heart {
+      position: fixed;
+      font-size: 26px;
+      animation: floatUp 8s linear infinite;
+      opacity: 0.75;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) scale(0.8) rotate(0deg); opacity: 0; }
+      20% { opacity: 0.9; }
+      100% { transform: translateY(-10vh) scale(1.3) rotate(360deg); opacity: 0; }
+    }
+
+    /* Page system */
+    .page {
+      display: none;
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px 20px;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      color: #ff4d6d;
+    }
+
+    header p {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      color: #ddd;
+    }
+
+    /* Navigation buttons */
+    .nav-buttons {
+      text-align: center;
+      margin: 20px;
+    }
+
+    .nav-buttons button {
+      margin: 8px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      background: #ff4d6d;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .nav-buttons button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(255, 77, 109, 0.7);
+    }
+
+    /* Cards grid */
+    .days, .memes-grid, .music-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 40px;
+    }
+
+    .card, .meme, .song {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 25px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      align-items: center;
+    }
+
+    .card:hover, .meme:hover, .song:hover {
+      transform: translateY(-8px) scale(1.05);
+      background: rgba(255, 77, 109, 0.25);
+      box-shadow: 0 0 25px rgba(255, 77, 109, 0.6);
+    }
+
+    .meme-carousel {
+      width: 100%;
+      overflow: hidden;
+      padding: 40px;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 20px;
+      animation: scrollMemes 16s linear infinite;
+    }
+
+    .carousel-track img {
+      width: 300px;
+      border-radius: 16px;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.08);
+      padding: 10px;
+    }
+
+    @keyframes scrollMemes {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    /* Popup */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: #0f3460;
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      z-index: 10;
+      transition: transform 0.3s ease;
+      box-shadow: 0 0 30px rgba(255, 77, 109, 0.6);
+    }
+
+    .popup.active {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .popup-hearts {
+      font-size: 28px;
+      margin-bottom: 10px;
+      animation: heartPulse 1s infinite alternate;
+    }
+
+    @keyframes heartPulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.2); }
+    }
+
+    .popup button {
+      margin-top: 15px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #ff4d6d;
+      color: white;
+      cursor: pointer;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 9;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating hearts -->
+  <div class="floating-heart" style="left: 10%; animation-delay: 0s;">💖</div>
+  <div class="floating-heart" style="left: 30%; animation-delay: 2s;">💘</div>
+  <div class="floating-heart" style="left: 50%; animation-delay: 4s;">💗</div>
+  <div class="floating-heart" style="left: 70%; animation-delay: 1s;">💓</div>
+  <div class="floating-heart" style="left: 90%; animation-delay: 3s;">💞</div>
+
+  <!-- Navigation -->
+  <div class="nav-buttons">
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="showPage('memes')">Memes</button>
+    <button onclick="showPage('music')">Playlist</button>
+  </div>
+
+  <!-- Home Page -->
+  <div id="home" class="page active">
+    <header>
+      <h1>Singles Valentine Week ❤️‍🩹✨</h1>
+      <p>Celebrate self-love, freedom, and fun this Valentine week</p>
+    </header>
+
+    <section class="days">
+      <div class="card" onclick="showMessage('Self-Love Day', 'Treat yourself to something special today!')">
+        <h2>Self-Love Day</h2>
+        <p>Spoil yourself without guilt.</p>
+      </div>
+
+      <div class="card" onclick="showMessage('Friendship Day', 'Hang out with friends and laugh loudly!')">
+        <h2>Friendship Day</h2>
+        <p>Celebrate your favorite people.</p>
+      </div>
+
+      <div class="card" onclick="showMessage('Hobby Day', 'Spend time doing what you love most!')">
+        <h2>Hobby Day</h2>
+        <p>Rediscover your passions.</p>
+      </div>
+
+      <div class="card" onclick="showMessage('Adventure Day', 'Try something new and exciting!')">
+        <h2>Adventure Day</h2>
+        <p>Break your routine.</p>
+      </div>
+      <div class="card" onclick="showMessage('Chill Day', 'Relax and recharge peacefully.')">
+      <h2>Chill Day</h2>
+      <p>Rest is productive too.</p>
+    </div>
+
+    <div class="card" onclick="showMessage('Glow-Up Day', 'Focus on self-care and confidence!')">
+      <h2>Glow-Up Day</h2>
+      <p>Feel your best.</p>
+    </div>
+
+    <div class="card" onclick="showMessage('Singles Pride Day', 'Celebrate being awesome and independent!')">
+      <h2>Singles Pride Day</h2>
+      <p>Own your story.</p>
+    </div>
+    </section>
+  </div>
+
+  <!-- Memes Page -->
+  <div id="memes" class="page">
+    <header>
+      <h1>Singles Meme Zone 😂</h1>
+      <p>Because humor is the best valentine</p>
+    </header>
+
+    <section class="meme-carousel">
+      <div class="carousel-track" id="carouselTrack">
+        <img src="assets/meme3.jpg" alt="">
+        <img src="assets/meme1.jpeg" alt="meme">
+        <img src="assets/meme2.jpg" alt="meme">
+        <img src="assets/meme4.jpg" alt="meme">
+      </div>
+    </section>
+  </div>
+
+  <!-- Music Page -->
+  <div id="music" class="page">
+    <header>
+      <h1>Singles Playlist 🎵</h1>
+      <p>Anthems for independence</p>
+    </header>
+
+    <section class="music-list">
+        <audio id="previewTrack" src="flowers.mp3" preload="auto" autoplay muted></audio>
+
+      <div class="song">🎶 Flowers – Miley Cyrus</div>
+      <div class="song">🎶 Single Ladies – Beyoncé</div>
+      <div class="song">🎶 Stronger – Kelly Clarkson</div>
+      <div class="song">🎶 Roar – Katy Perry</div>
+      <div class="song">🎶 Unstoppable – Sia</div>
+    </section>
+  </div>
+
+  <!-- Popup -->
+  <div class="overlay" id="overlay" onclick="closePopup()"></div>
+  <div class="popup" id="popup">
+    <div class="popup-hearts">💖💘💗</div>
+    <h2 id="popupTitle"></h2>
+    <p id="popupText"></p>
+    <button onclick="closePopup()">Close</button>
+  </div>
+
+  <footer>
+    Made for singles who celebrate life their way ❤️
+  </footer>
+
+  <script>
+    function showMessage(title, text) {
+      document.getElementById('popupTitle').innerText = title;
+      document.getElementById('popupText').innerText = text;
+      document.getElementById('popup').classList.add('active');
+      document.getElementById('overlay').classList.add('active');
+    }
+
+    function closePopup() {
+      document.getElementById('popup').classList.remove('active');
+      document.getElementById('overlay').classList.remove('active');
+    }
+
+    function showPage(pageId) {
+       const pages = document.querySelectorAll('.page');
+       pages.forEach(p => p.classList.remove('active'));
+       document.getElementById(pageId).classList.add('active');
+
+
+        // Auto play preview track on music page
+        const preview = document.getElementById('previewTrack');
+        if (pageId === 'music' && preview) {
+          preview.currentTime = 0;
+          preview.play().catch(() => {});
+        } else if (preview) {
+          preview.pause();
+        }
+        document.addEventListener("click", () => {
+         const audio = document.getElementById("previewTrack");
+         audio.muted = false;
+         }, { once: true });
+
+    }
+    
+
+  </script>
+</body>
+</html>
